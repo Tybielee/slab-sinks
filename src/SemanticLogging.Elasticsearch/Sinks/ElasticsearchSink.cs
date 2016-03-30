@@ -15,6 +15,7 @@ using Microsoft.Practices.EnterpriseLibrary.SemanticLogging.Sinks;
 using Microsoft.Practices.EnterpriseLibrary.SemanticLogging.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace FullScale180.SemanticLogging.Sinks
 {
@@ -171,12 +172,13 @@ namespace FullScale180.SemanticLogging.Sinks
                 }
                 var content = new StringContent(logMessages);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
+                
                 var response = await client.PostAsync(this.elasticsearchUrl, content, cancellationTokenSource.Token).ConfigureAwait(false);
 
                 // If there is an exception
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
+                    
                     // Check the response for 400 bad request
                     if (response.StatusCode == HttpStatusCode.BadRequest)
                     {
@@ -185,7 +187,7 @@ namespace FullScale180.SemanticLogging.Sinks
                         var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                         string serverErrorMessage;
-
+                        
                         // Try to parse the exception message
                         try
                         {
@@ -202,14 +204,13 @@ namespace FullScale180.SemanticLogging.Sinks
                         // I don't like discarding events but we cannot let a single malformed event prevent others from being written
                         // We might want to consider falling back to writing entries individually here
                         SemanticLoggingEventSource.Log.CustomSinkUnhandledFault(string.Format("Elasticsearch sink unhandled exception {0} messages discarded with server error message {1}", messagesDiscarded, serverErrorMessage));
-
                         return messagesDiscarded;
                     }
 
                     // This will leave the messages in the buffer
                     return 0;
                 }
-
+                
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var responseObject = JObject.Parse(responseString);
 
@@ -221,8 +222,14 @@ namespace FullScale180.SemanticLogging.Sinks
                     // NOTE: This only works with Elasticsearch 1.0
                     // Alternatively we could query ES as part of initialization check results or fall back to trying <1.0 parsing
                     // We should also consider logging errors for individual entries
-                    return items.Count(t => t["create"]["status"].Value<int>().Equals(201));
-
+                    if (this.elasticsearchUrl.Port == 80 || this.elasticsearchUrl.Port == 443)
+                    {
+                        return items.Count(t => t["index"]["status"].Value<int>().Equals(201));
+                    }
+                    else if (this.elasticsearchUrl.Port == 9200 || this.elasticsearchUrl.Port == 9243)
+                    {
+                        return items.Count(t => t["create"]["status"].Value<int>().Equals(201));
+                    }
                     // Pre-1.0 Elasticsearch
                     // return items.Count(t => t["create"]["ok"].Value<bool>().Equals(true));
                 }
@@ -236,6 +243,7 @@ namespace FullScale180.SemanticLogging.Sinks
             catch (Exception ex)
             {
                 // Although this is generally considered an anti-pattern this is not logged upstream and we have context
+                Debug.WriteLine("{0} \n {1} \n {2} \n ", ex.Message, ex.InnerException, ex.StackTrace);
                 SemanticLoggingEventSource.Log.CustomSinkUnhandledFault(ex.ToString());
                 throw;
             }

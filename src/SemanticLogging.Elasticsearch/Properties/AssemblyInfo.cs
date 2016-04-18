@@ -8,8 +8,6 @@ using System.Security;
 [assembly: AssemblyTitle("Enterprise Library Semantic Logging Application Block")]
 [assembly: AssemblyDescription("Enterprise Library Semantic Logging Application Block")]
 
-[assembly: SecurityTransparent]
-
 [assembly: AssemblyVersion("2.0.0")]
 [assembly: AssemblyFileVersion("2.2.5")]
 [assembly: AssemblyInformationalVersion("2.2.5")]

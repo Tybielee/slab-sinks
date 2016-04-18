@@ -31,22 +31,26 @@ namespace FullScale180.SemanticLogging
         /// the <see cref="System.Diagnostics.Tracing.EventListener" /> will block until all the entries are flushed or the interval elapses.
         /// If <see langword="null" /> is specified, then the call will block indefinitely until the flush operation finishes.</param>
         /// <param name="globalContextExtension">A dictionary of user defined keys and values to be attached to each log.</param>
+        /// <param name="userName">Name of the user for use in the Authorization header</param>
+        /// <param name="password">The password for use in the authorization header</param>
         /// <returns>
         /// A subscription to the sink that can be disposed to unsubscribe the sink and dispose it, or to get access to the sink instance.
         /// </returns>
-        public static SinkSubscription<ElasticsearchSink> LogToElasticsearch(this IObservable<EventEntry> eventStream,
+        public static SinkSubscription<ElasticsearchSink> LogToElasticsearch(
+            this IObservable<EventEntry> eventStream,
             string instanceName, string connectionString, string index, string type, bool flattenPayload = true, TimeSpan? bufferingInterval = null,
             TimeSpan? onCompletedTimeout = null,
             int bufferingCount = Buffering.DefaultBufferingCount,
             int maxBufferSize = Buffering.DefaultMaxBufferSize,
-            Dictionary<string,string> globalContextExtension = null)
+            Dictionary<string,string> globalContextExtension = null,
+            string userName = null, string password = null)
         {
             var sink = new ElasticsearchSink(instanceName, connectionString, index, type, flattenPayload,
                 bufferingInterval ?? Buffering.DefaultBufferingInterval,
                 bufferingCount,
                 maxBufferSize,
                 onCompletedTimeout ?? Timeout.InfiniteTimeSpan,
-                JsonConvert.SerializeObject(globalContextExtension));
+                JsonConvert.SerializeObject(globalContextExtension), userName, password);
 
             var subscription = eventStream.Subscribe(sink);
             return new SinkSubscription<ElasticsearchSink>(subscription, sink);

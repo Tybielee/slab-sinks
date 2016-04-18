@@ -16,6 +16,7 @@ using Microsoft.Practices.EnterpriseLibrary.SemanticLogging.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Text;
 
 namespace FullScale180.SemanticLogging.Sinks
 {
@@ -33,15 +34,19 @@ namespace FullScale180.SemanticLogging.Sinks
         private readonly string index;
         private readonly string type;
         private readonly string instanceName;
+        private readonly string userName;
+        private readonly string password;
 
         private readonly bool flattenPayload;
 
         private readonly Uri elasticsearchUrl;
+        private readonly string elasticsearchConnection;
+
         private readonly TimeSpan onCompletedTimeout;
         private readonly Dictionary<string, string> _jsonGlobalContextExtension;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElasticsearchSink"/> class with the specified connection string and table address.
+        /// Initializes a new instance of the <see cref="ElasticsearchSink" /> class with the specified connection string and table address.
         /// </summary>
         /// <param name="instanceName">The name of the instance originating the entries.</param>
         /// <param name="connectionString">The connection string for the storage account.</param>
@@ -49,15 +54,18 @@ namespace FullScale180.SemanticLogging.Sinks
         /// <param name="type">Elasticsearch entry type.</param>
         /// <param name="flattenPayload">Flatten the payload collection when serializing event entries</param>
         /// <param name="bufferInterval">The buffering interval to wait for events to accumulate before sending them to Elasticsearch.</param>
-        /// <param name="bufferingCount">The buffering event entry count to wait before sending events to Elasticsearch </param>
+        /// <param name="bufferingCount">The buffering event entry count to wait before sending events to Elasticsearch</param>
         /// <param name="maxBufferSize">The maximum number of entries that can be buffered while it's sending to Windows Azure Storage before the sink starts dropping entries.</param>
-        /// <param name="onCompletedTimeout">Defines a timeout interval for when flushing the entries after an <see cref="OnCompleted"/> call is received and before disposing the sink.
-        /// This means that if the timeout period elapses, some event entries will be dropped and not sent to the store. Normally, calling <see cref="IDisposable.Dispose"/> on 
-        /// the <see cref="System.Diagnostics.Tracing.EventListener"/> will block until all the entries are flushed or the interval elapses.
-        /// If <see langword="null"/> is specified, then the call will block indefinitely until the flush operation finishes.</param>
+        /// <param name="onCompletedTimeout">Defines a timeout interval for when flushing the entries after an <see cref="OnCompleted" /> call is received and before disposing the sink.
+        /// This means that if the timeout period elapses, some event entries will be dropped and not sent to the store. Normally, calling <see cref="IDisposable.Dispose" /> on
+        /// the <see cref="System.Diagnostics.Tracing.EventListener" /> will block until all the entries are flushed or the interval elapses.
+        /// If <see langword="null" /> is specified, then the call will block indefinitely until the flush operation finishes.</param>
         /// <param name="jsonGlobalContextExtension">A json encoded key/value set of global environment parameters to be included in each log entry</param>
+        /// <param name="userName">Name of the user for use in the Authorization header</param>
+        /// <param name="password">The password for use in the Authorization header</param>
+        /// <exception cref="System.ArgumentException">index</exception>
         public ElasticsearchSink(string instanceName, string connectionString, string index, string type, bool? flattenPayload, TimeSpan bufferInterval,
-            int bufferingCount, int maxBufferSize, TimeSpan onCompletedTimeout, string jsonGlobalContextExtension = null)
+            int bufferingCount, int maxBufferSize, TimeSpan onCompletedTimeout, string jsonGlobalContextExtension = null, string userName = null, string password = null)
         {
             Guard.ArgumentNotNullOrEmpty(instanceName, "instanceName");
             Guard.ArgumentNotNullOrEmpty(connectionString, "connectionString");
@@ -75,7 +83,10 @@ namespace FullScale180.SemanticLogging.Sinks
 
             this.instanceName = instanceName;
             this.flattenPayload = flattenPayload ?? true;
+            
             this.elasticsearchUrl = new Uri(new Uri(connectionString), BulkServiceOperationPath);
+            this.elasticsearchConnection = connectionString + BulkServiceOperationPath;
+
             this.index = index;
             this.type = type;
             var sinkId = string.Format(CultureInfo.InvariantCulture, "ElasticsearchSink ({0})", instanceName);
@@ -83,6 +94,9 @@ namespace FullScale180.SemanticLogging.Sinks
                 bufferingCount, maxBufferSize, cancellationTokenSource.Token);
 
             this._jsonGlobalContextExtension = !string.IsNullOrEmpty(jsonGlobalContextExtension)? JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonGlobalContextExtension): null;
+
+            this.userName = !string.IsNullOrEmpty(userName) ? userName : null;
+            this.password = !string.IsNullOrEmpty(password) ? password : null;
         }
 
         /// <summary>
@@ -172,8 +186,15 @@ namespace FullScale180.SemanticLogging.Sinks
                 }
                 var content = new StringContent(logMessages);
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                
-                var response = await client.PostAsync(this.elasticsearchUrl, content, cancellationTokenSource.Token).ConfigureAwait(false);
+
+                // buiding the basic authorization
+                if (this.userName != null && this.password != null)
+                {
+                    var byteArray = Encoding.ASCII.GetBytes(this.userName+":"+this.password);
+                    var header = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                    this.client.DefaultRequestHeaders.Authorization = header;
+                }
+                var response = await this.client.PostAsync(this.elasticsearchUrl, content, this.cancellationTokenSource.Token).ConfigureAwait(false);
 
                 // If there is an exception
                 if (response.StatusCode != HttpStatusCode.OK)

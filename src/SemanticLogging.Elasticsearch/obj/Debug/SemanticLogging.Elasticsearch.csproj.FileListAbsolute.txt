@@ -1,0 +1,9 @@
+C:\GitHub\Repos\slab-sinks\src\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.dll.config
+C:\GitHub\Repos\slab-sinks\src\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.xml
+C:\GitHub\Repos\slab-sinks\src\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.dll
+C:\GitHub\Repos\slab-sinks\src\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.pdb
+C:\GitHub\Repos\slab-sinks\src\SemanticLogging.Elasticsearch\obj\Debug\FullScale180.SemanticLogging.Properties.Resource.resources
+C:\GitHub\Repos\slab-sinks\src\SemanticLogging.Elasticsearch\obj\Debug\SemanticLogging.Elasticsearch.csproj.GenerateResource.Cache
+C:\GitHub\Repos\slab-sinks\src\SemanticLogging.Elasticsearch\obj\Debug\FullScale180.SemanticLogging.Elasticsearch.dll
+C:\GitHub\Repos\slab-sinks\src\SemanticLogging.Elasticsearch\obj\Debug\FullScale180.SemanticLogging.Elasticsearch.pdb
+C:\GitHub\Repos\slab-sinks\src\SemanticLogging.Elasticsearch\obj\Debug\SemanticLogging.Elasticsearch.csprojResolveAssemblyReference.cache

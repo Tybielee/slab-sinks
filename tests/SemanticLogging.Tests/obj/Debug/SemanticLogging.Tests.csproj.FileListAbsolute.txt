@@ -1,0 +1,14 @@
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\FullScale180.SemanticLogging.Tests.dll.config
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\FullScale180.SemanticLogging.Tests.dll
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\FullScale180.SemanticLogging.Tests.pdb
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.dll
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\Microsoft.Practices.EnterpriseLibrary.SemanticLogging.dll
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\Newtonsoft.Json.dll
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.pdb
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\FullScale180.SemanticLogging.Elasticsearch.xml
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\Microsoft.Practices.EnterpriseLibrary.SemanticLogging.xml
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\bin\Debug\Newtonsoft.Json.xml
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\obj\Debug\SemanticLogging.Tests.csprojResolveAssemblyReference.cache
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\obj\Debug\FullScale180.SemanticLogging.Tests.dll
+C:\GitHub\Repos\slab-sinks\tests\SemanticLogging.Tests\obj\Debug\FullScale180.SemanticLogging.Tests.pdb

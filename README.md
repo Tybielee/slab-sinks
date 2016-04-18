@@ -50,8 +50,8 @@ listener.LogToElasticsearch(
     "http://YOUR_FOUND_LINK:9200",
     "index_name",
     "type_name",
-    "userName: your userName",
-     "password: your password");
+    userName: "your userName",
+    password: "your password");
 ```
 The username and password are not hashed or encrypted so if that is a concern for your use-case please feel free to fork this repository and update it to suit your needs.
 

@@ -32,3 +32,12 @@ listener.LogToElasticsearch(
     "slab",
     "mylogs");
 ```
+
+###4 Send events to Logsene
+```
+listener.LogToElasticsearch(
+    Environment.MachineName,
+    "http://logsene-receiver.sematext.com:80",
+    "LOGSENE_APP_TOKEN",
+    "mylogs");
+```

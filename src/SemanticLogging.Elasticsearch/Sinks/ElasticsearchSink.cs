@@ -65,7 +65,7 @@ namespace FullScale180.SemanticLogging.Sinks
         /// <param name="password">The password for use in the Authorization header</param>
         /// <exception cref="System.ArgumentException">index</exception>
         public ElasticsearchSink(string instanceName, string connectionString, string index, string type, bool? flattenPayload, TimeSpan bufferInterval,
-            int bufferingCount, int maxBufferSize, TimeSpan onCompletedTimeout, string jsonGlobalContextExtension = null, string userName = null, string password = null)
+            int bufferingCount, int maxBufferSize, TimeSpan onCompletedTimeout, string userName, string password, string jsonGlobalContextExtension = null)
         {
             Guard.ArgumentNotNullOrEmpty(instanceName, "instanceName");
             Guard.ArgumentNotNullOrEmpty(connectionString, "connectionString");
@@ -89,14 +89,17 @@ namespace FullScale180.SemanticLogging.Sinks
 
             this.index = index;
             this.type = type;
+
+            this.userName = userName;
+            this.password = password;
+
             var sinkId = string.Format(CultureInfo.InvariantCulture, "ElasticsearchSink ({0})", instanceName);
             bufferedPublisher = BufferedEventPublisher<EventEntry>.CreateAndStart(sinkId, PublishEventsAsync, bufferInterval,
                 bufferingCount, maxBufferSize, cancellationTokenSource.Token);
 
             this._jsonGlobalContextExtension = !string.IsNullOrEmpty(jsonGlobalContextExtension)? JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonGlobalContextExtension): null;
 
-            this.userName = !string.IsNullOrEmpty(userName) ? userName : null;
-            this.password = !string.IsNullOrEmpty(password) ? password : null;
+
         }
 
         /// <summary>
@@ -190,7 +193,8 @@ namespace FullScale180.SemanticLogging.Sinks
                 // buiding the basic authorization
                 if (this.userName != null && this.password != null)
                 {
-                    var byteArray = Encoding.ASCII.GetBytes(this.userName+":"+this.password);
+                    string temp = this.userName + ":" + this.password;
+                    var byteArray = Encoding.ASCII.GetBytes(temp);
                     var header = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
                     this.client.DefaultRequestHeaders.Authorization = header;
                 }

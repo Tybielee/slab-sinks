@@ -50,7 +50,8 @@ namespace FullScale180.SemanticLogging
                 bufferingCount,
                 maxBufferSize,
                 onCompletedTimeout ?? Timeout.InfiniteTimeSpan,
-                JsonConvert.SerializeObject(globalContextExtension), userName, password);
+                userName, password,
+                JsonConvert.SerializeObject(globalContextExtension));
 
             var subscription = eventStream.Subscribe(sink);
             return new SinkSubscription<ElasticsearchSink>(subscription, sink);

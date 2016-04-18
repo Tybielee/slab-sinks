@@ -1,7 +1,8 @@
 slab-sinks
 ==========
 This project contains Semantic Logging Application Block (SLAB) sinks to persist application events published to ETW and consumed by SLAB.
-
+Now contains the ability to write to a Shield Authenticated Elasticsearch (primarily used with Elastic Cloud)
+Also can write events to Logsene (another hosted Elasticsearch)
 __Sinks__
 * Elasticsearch (Where else would you write events?)
 
@@ -41,3 +42,16 @@ listener.LogToElasticsearch(
     "LOGSENE_APP_TOKEN",
     "mylogs");
 ```
+
+###5 Using Shield Authentication
+```
+listener.LogToElasticsearch(
+    Environment.MachineName,
+    "http://YOUR_FOUND_LINK:9200",
+    "index_name",
+    "type_name",
+    "userName: your userName",
+     "password: your password");
+```
+The username and password are not hashed or encrypted so if that is a concern for your use-case please feel free to fork this repository and update it to suit your needs.
+

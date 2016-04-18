@@ -1,8 +1,10 @@
 slab-sinks
 ==========
 This project contains Semantic Logging Application Block (SLAB) sinks to persist application events published to ETW and consumed by SLAB.
-Now contains the ability to write to a Shield Authenticated Elasticsearch (primarily used with Elastic Cloud)
-Also can write events to Logsene (another hosted Elasticsearch)
+Now contains the ability to write to a Shield Authenticated Elasticsearch (primarily used with Elastic Cloud) 
+Also can write events to Logsene (another hosted Elasticsearch) 
+
+
 __Sinks__
 * Elasticsearch (Where else would you write events?)
 

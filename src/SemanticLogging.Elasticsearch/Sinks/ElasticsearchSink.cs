@@ -253,7 +253,10 @@ namespace FullScale180.SemanticLogging.Sinks
                     }
                     else if (this.elasticsearchUrl.Port == 9200 || this.elasticsearchUrl.Port == 9243)
                     {
-                        return items.Count(t => t["create"]["status"].Value<int>().Equals(201));
+                        //return items.Count(t => t["create"]["status"].Value<int>().Equals(201));
+                        // Temporary fix: ES 2.3.1 returns create for bulk index, ES 5.0.2 and ES 5.1.1 return index for buld index.
+                        // TODO Introduce version specific constant here. 
+                        return items.Count(t => t["index"]["status"].Value<int>().Equals(201));
                     }
                     // Pre-1.0 Elasticsearch
                     // return items.Count(t => t["create"]["ok"].Value<bool>().Equals(true));

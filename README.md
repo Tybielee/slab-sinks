@@ -1,3 +1,6 @@
+# Project Status
+This project is no longer in active development and is being archived. Please fork the repository if you need to make your own changes.
+
 slab-sinks
 ==========
 This project contains Semantic Logging Application Block (SLAB) sinks to persist application events published to ETW and consumed by SLAB.

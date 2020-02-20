@@ -8,26 +8,26 @@ Also can write events to Logsene (another hosted Elasticsearch)
 __Sinks__
 * Elasticsearch (Where else would you write events?)
 
-##Elasticsearch Sink
+## Elasticsearch Sink
 A sink to write [Semantic Logging Application Block (SLAB)](http://slab.codeplex.com) events to [Elasticsearch](http://www.elasticsearch.org).
 
-###0 Create an event source
+### 0 Create an event source
 Create a class derived from [EventSource](http://msdn.microsoft.com/en-us/library/system.diagnostics.tracing.eventsource(v=vs.110).aspx)
 
 You could also use [EventSourceProxy](https://github.com/jonwagner/EventSourceProxy)
 
-###1 Install NuGet
+### 1 Install NuGet
 ```
 Install-Package EnterpriseLibrary.SemanticLogging.Elasticsearch
 ```
-###2 Create a listener and enable events
+### 2 Create a listener and enable events
 ```C#
 var listener = new ObservableEventListener();
 
 listener.EnableEvents(CommonEventSource.Log, EventLevel.LogAlways, ~EventKeywords.None);
 ```
 
-###3 Send events to Elasticsearch
+### 3 Send events to Elasticsearch
 ```
 listener.LogToElasticsearch(
     Environment.MachineName,
@@ -36,7 +36,7 @@ listener.LogToElasticsearch(
     "mylogs");
 ```
 
-###4 Send events to Logsene
+### 4 Send events to Logsene
 ```
 listener.LogToElasticsearch(
     Environment.MachineName,
@@ -45,7 +45,7 @@ listener.LogToElasticsearch(
     "mylogs");
 ```
 
-###5 Using Shield Authentication
+### 5 Using Shield Authentication
 ```
 listener.LogToElasticsearch(
     Environment.MachineName,
